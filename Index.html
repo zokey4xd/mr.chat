@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MR Chat Web</title>
+  <style>
+    body { margin:0; font-family: Arial, sans-serif; background-color:#121212; color:white; }
+    .splash { display:flex; align-items:center; justify-content:center; height:100vh; font-size:4em; color:#00aaff; }
+    .screen { display:none; padding:20px; }
+    .active { display:block; }
+    input[type=text] { width:100%; padding:10px; margin:10px 0; border-radius:5px; border:none; }
+    button { background-color:#00aaff; color:white; padding:10px; border:none; border-radius:5px; width:100%; font-size:1em; cursor:pointer; }
+    .chat-list { margin-top:20px; }
+    .chat-item { padding:10px; border-bottom:1px solid #333; cursor:pointer; }
+    .chat-bubble { padding:10px; border-radius:15px; margin:5px; display:inline-block; max-width:70%; }
+    .sent { background-color:#00aaff; color:white; align-self:flex-end; }
+    .received { background-color:#333; color:white; align-self:flex-start; }
+    .chat-container { display:flex; flex-direction:column; margin-top:20px; }
+    .chat-input { display:flex; margin-top:10px; }
+    .chat-input input { flex:1; padding:10px; border-radius:5px 0 0 5px; border:none; }
+    .chat-input button { border-radius:0 5px 5px 0; }
+  </style>
+</head>
+<body>
+
+<div class="splash active" id="splash">MR</div>
+
+<div class="screen" id="screen-number">
+  <h2>Enter your phone number</h2>
+  <input type="text" id="phone" placeholder="Phone Number">
+  <button id="next-otp">Next</button>
+</div>
+
+<div class="screen" id="screen-otp">
+  <h2>Enter OTP (any 6 digits)</h2>
+  <input type="text" id="otp" placeholder="******">
+  <button id="verify-otp">Confirm</button>
+</div>
+
+<div class="screen" id="screen-chats">
+  <h2>Chats</h2>
+  <button id="new-chat-btn">+ New Chat</button>
+  <div class="chat-list" id="chat-list"></div>
+</div>
+
+<div class="screen" id="screen-chat">
+  <h2 id="chat-title">MR Bot</h2>
+  <div class="chat-container" id="chat-container"></div>
+  <div class="chat-input">
+    <input type="text" id="chat-message" placeholder="Type a message">
+    <button id="send-btn">Send</button>
+  </div>
+</div>
+
+<script>
+setTimeout(()=>{ document.getElementById('splash').classList.remove('active'); document.getElementById('screen-number').classList.add('active'); }, 1500);
+document.getElementById('next-otp').onclick = ()=>{ document.getElementById('screen-number').classList.remove('active'); document.getElementById('screen-otp').classList.add('active'); }
+document.getElementById('verify-otp').onclick = ()=>{ document.getElementById('screen-otp').classList.remove('active'); document.getElementById('screen-chats').classList.add('active'); loadChats(); }
+let currentChat = null;
+function loadChats(){ const chatList = document.getElementById('chat-list'); chatList.innerHTML = ''; const botItem = document.createElement('div'); botItem.className='chat-item'; botItem.innerText='MR Bot'; botItem.onclick=()=>{openChat('MR Bot')}; chatList.appendChild(botItem); }
+function openChat(name){ currentChat=name; document.getElementById('screen-chats').classList.remove('active'); document.getElementById('screen-chat').classList.add('active'); document.getElementById('chat-title').innerText=name; document.getElementById('chat-container').innerHTML=''; }
+function addMessage(text,type){ const container=document.getElementById('chat-container'); const bubble=document.createElement('div'); bubble.className='chat-bubble '+type; bubble.innerText=text; container.appendChild(bubble); container.scrollTop=container.scrollHeight; }
+document.getElementById('send-btn').onclick=()=>{ const input=document.getElementById('chat-message'); const message=input.value; if(!message)return; addMessage(message,'sent'); input.value=''; setTimeout(()=>{addMessage('MR Bot reply: I understood your message!','received');},800);}
+</script>
+
+</body>
+</html>
